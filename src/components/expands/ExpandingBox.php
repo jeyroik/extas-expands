@@ -151,4 +151,12 @@ class ExpandingBox extends Parameter implements IExpandingBox
 
         return $this;
     }
+
+    /**
+     * @return string
+     */
+    protected function getSubjectForExtension(): string
+    {
+        return 'extas.expand.box';
+    }
 }

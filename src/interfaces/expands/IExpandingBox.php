@@ -14,7 +14,6 @@ use extas\interfaces\servers\responses\IServerResponse;
  */
 interface IExpandingBox extends IParameter, IHasDescription
 {
-    const SUBJECT = 'extas.expand.box';
     const DATA__MARKER = '$';
     const FIELD__ROOT = 'root';
     const FIELD__EXPAND = 'expand';
