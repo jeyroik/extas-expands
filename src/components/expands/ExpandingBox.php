@@ -54,9 +54,12 @@ class ExpandingBox extends Parameter implements IExpandingBox
         return $this;
     }
 
+    /**
+     * @return bool
+     */
     public function isPacked(): bool
     {
-        // TODO: Implement isPacked() method.
+        return $this->config[static::FIELD__IS_PACKED] ?? false;
     }
 
     /**
@@ -114,6 +117,7 @@ class ExpandingBox extends Parameter implements IExpandingBox
     public function pack(): IExpandingBox
     {
         $this->addToValue(static::FIELD__EXPAND, $this->getExpand());
+        $this->config[static::FIELD__IS_PACKED] = true;
 
         return $this;
     }
@@ -128,6 +132,7 @@ class ExpandingBox extends Parameter implements IExpandingBox
             unset($value[static::FIELD__EXPAND]);
         }
         $this->setValue($value);
+        $this->config[static::FIELD__IS_PACKED] = false;
 
         return $this;
     }
