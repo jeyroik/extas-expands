@@ -1,0 +1,15 @@
+{
+  "name": "jeyroik/extas-expands",
+  "description": "Extas expands package",
+  "require": {
+    "jeyroik/extas-foundation": "*",
+    "jeyroik/extas-base": "*",
+    "jeyroik/extas-access": "*",
+    "jeyroik/extas-players": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "extas\\": "src/"
+    }
+  }
+}
