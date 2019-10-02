@@ -1,0 +1,12 @@
+{
+  "name": "extas.protocol.expand",
+  "protocols": [
+    {
+      "name": "expand",
+      "title": "Extas expand",
+      "description": "Parse headers and request parameters for expand attribute",
+      "accept": ["*"],
+      "class": "extas\\components\\protocols\\ProtocolExpand"
+    }
+  ]
+}
