@@ -19,6 +19,9 @@ interface IExpandingBox extends IParameter, IHasDescription
     const FIELD__EXPAND = 'expand';
     const FIELD__IS_PACKED = 'is_packed';
 
+    /**
+     * @return string
+     */
     public function getRoot(): string;
 
     /**

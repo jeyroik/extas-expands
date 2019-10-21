@@ -1,5 +1,17 @@
 {
   "name": "extas.protocol.expand",
+  "package_classes": [
+    {
+      "interface": "extas\\interfaces\\expands\\IExpandRequiredRepository",
+      "class": "extas\\components\\expands\\ExpandRequiredRepository"
+    }
+  ],
+  "plugins": [
+    {
+      "class": "extas\\components\\plugins\\PluginInstallExpandsRequired",
+      "stage": "extas.install"
+    }
+  ],
   "protocols": [
     {
       "name": "expand",
