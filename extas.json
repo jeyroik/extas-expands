@@ -8,7 +8,7 @@
   ],
   "plugins": [
     {
-      "class": "extas\\components\\plugins\\PluginInstallExpandsRequired",
+      "class": "extas\\components\\plugins\\expands\\PluginInstallExpandsRequired",
       "stage": "extas.install"
     }
   ],
