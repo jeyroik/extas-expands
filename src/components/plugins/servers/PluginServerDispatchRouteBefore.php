@@ -11,6 +11,7 @@ use extas\interfaces\servers\responses\IServerResponse;
 /**
  * Class PluginServerDispatchRouteBefore
  *
+ * @stage route.before
  * @package extas\components\plugins\servers
  * @author jeyroik@gmail.com
  */
