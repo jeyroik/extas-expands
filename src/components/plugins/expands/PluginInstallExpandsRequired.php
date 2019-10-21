@@ -1,7 +1,8 @@
 <?php
-namespace extas\components\plugins;
+namespace extas\components\plugins\expands;
 
 use extas\components\expands\ExpandRequired;
+use extas\components\plugins\PluginInstallDefault;
 use extas\interfaces\expands\IExpandRequiredRepository;
 
 /**
