@@ -12,9 +12,9 @@ use extas\interfaces\expands\IExpandRequiredRepository;
  */
 class ExpandRequiredRepository extends Repository implements IExpandRequiredRepository
 {
-    protected $itemClass = ExpandRequired::class;
-    protected $name = 'expand_required';
-    protected $pk = ExpandRequired::FIELD__NAME;
-    protected $scope = 'extas';
-    protected $idAs = '';
+    protected string $itemClass = ExpandRequired::class;
+    protected string $name = 'expand_required';
+    protected string $pk = ExpandRequired::FIELD__NAME;
+    protected string $scope = 'extas';
+    protected string $idAs = '';
 }

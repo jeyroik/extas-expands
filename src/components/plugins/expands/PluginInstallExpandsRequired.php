@@ -13,9 +13,9 @@ use extas\interfaces\expands\IExpandRequiredRepository;
  */
 class PluginInstallExpandsRequired extends PluginInstallDefault
 {
-    protected $selfRepositoryClass = IExpandRequiredRepository::class;
-    protected $selfUID = ExpandRequired::FIELD__NAME;
-    protected $selfSection = 'required_expands';
-    protected $selfName = 'required expand';
-    protected $selfItemClass = ExpandRequired::class;
+    protected string $selfRepositoryClass = IExpandRequiredRepository::class;
+    protected string $selfUID = ExpandRequired::FIELD__NAME;
+    protected string $selfSection = 'required_expands';
+    protected string $selfName = 'required expand';
+    protected string $selfItemClass = ExpandRequired::class;
 }

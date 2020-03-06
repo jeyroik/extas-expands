@@ -1,5 +1,17 @@
 {
   "name": "extas.protocol.expand",
+  "installer_options": [
+    {
+      "name": "only-expand",
+      "shortcut": "",
+      "mode": 4,
+      "title": "",
+      "description": "",
+      "default": "",
+      "stage": "installer|plugin|item",
+      "class": "extas\\"
+    }
+  ],
   "package_classes": [
     {
       "interface": "extas\\interfaces\\expands\\IExpandRequiredRepository",

@@ -15,5 +15,5 @@ use extas\interfaces\expands\IExpandingBox;
  */
 class ProtocolExpand extends ProtocolParameterHeaderDefault
 {
-    protected $protocolKey = IExpandingBox::FIELD__EXPAND;
+    protected string $protocolKey = IExpandingBox::FIELD__EXPAND;
 }

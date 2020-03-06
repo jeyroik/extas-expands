@@ -44,7 +44,10 @@ class PluginServerDispatchRouteBefore extends Plugin
         ]);
         $expand = $serverRequest->getParameter('expand');
         foreach ($requiredExpands as $requiredExpand) {
-            $expand->setValue($expand->getValue() . ',' . $requiredExpand->getName());
+            $currentValue = $expand->getValue();
+            if (strpos($currentValue, $requiredExpand->getName()) === false) {
+                $expand->setValue($expand->getValue() . ',' . $requiredExpand->getName());
+            }
         }
         $serverRequest->setParameter('expand', $expand);
     }

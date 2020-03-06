@@ -26,7 +26,7 @@ abstract class PluginExpandAbstract extends Plugin
     /**
      * @var array
      */
-    protected $access = [];
+    protected array $access = [];
 
     /**
      * @param IExpandingBox $parent
