@@ -1,5 +1,5 @@
 {
-  "name": "extas.protocol.expand",
+  "name": "extas/protocol-expand",
   "installer_options": [
     {
       "name": "only-expand",
