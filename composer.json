@@ -2,7 +2,6 @@
   "name": "jeyroik/extas-expands",
   "description": "Extas expands package",
   "require": {
-    "jeyroik/extas-foundation": "2.*",
     "jeyroik/extas-base": "1.*",
     "jeyroik/extas-access": "2.*",
     "jeyroik/extas-players": "1.*",
