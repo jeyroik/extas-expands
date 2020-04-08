@@ -24,11 +24,6 @@ use extas\interfaces\servers\responses\IServerResponse;
 abstract class PluginExpandAbstract extends Plugin
 {
     /**
-     * @var array
-     */
-    protected array $access = [];
-
-    /**
      * @param IExpandingBox $parent
      * @param IServerRequest $request
      * @param IServerResponse $response
@@ -37,33 +32,12 @@ abstract class PluginExpandAbstract extends Plugin
      */
     public function __invoke(&$parent, IServerRequest &$request, IServerResponse &$response)
     {
-        if ($this->isAllowed()) {
-            $expand = $this->getExpandName();
-            $expand && $parent->addExpand($parent->getName() . '.' . $expand);
+        $expand = $this->getExpandName();
+        $expand && $parent->addExpand($parent->getName() . '.' . $expand);
 
-            if ($expand && $request->isExpandedWith($parent->getName() . '.' . $expand)) {
-                $this->dispatch($parent, $request, $response);
-            }
+        if ($expand && $request->isExpandedWith($parent->getName() . '.' . $expand)) {
+            $this->dispatch($parent, $request, $response);
         }
-    }
-
-    /**
-     * @return array
-     */
-    protected function getAccess()
-    {
-        $this->access[IAccess::FIELD__OBJECT] = $this->access[IAccess::FIELD__OBJECT]
-            ?? Current::player()->getAliases();
-
-        return $this->access;
-    }
-
-    /**
-     * @return bool
-     */
-    protected function isAllowed()
-    {
-        return (new AccessOperation($this->getAccess()))->exists();
     }
 
     /**
