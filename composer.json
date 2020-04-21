@@ -6,7 +6,7 @@
     "jeyroik/extas-access": "2.*",
     "jeyroik/extas-players": "1.*",
     "jeyroik/extas-protocols": "1.*",
-    "jeyroik/extas-servers": "1.*"
+    "jeyroik/extas-servers": "2.*"
   },
   "autoload": {
     "psr-4": {
