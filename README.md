@@ -1,4 +1,9 @@
-# extas-expands
+![PHP Composer](https://github.com/jeyroik/extas-expands/workflows/PHP%20Composer/badge.svg?branch=master&event=push)
+![codecov.io](https://codecov.io/gh/jeyroik/extas-expands/coverage.svg?branch=master)
+<a href="https://github.com/phpstan/phpstan"><img src="https://img.shields.io/badge/PHPStan-enabled-brightgreen.svg?style=flat" alt="PHPStan Enabled"></a> 
+<a href="https://codeclimate.com/github/jeyroik/extas-expands/maintainability"><img src="https://api.codeclimate.com/v1/badges/93d2094728c65c5f2be5/maintainability" /></a>
+
+# Описание
 
 Пакет позволяет создавать распаковывающиеся объекты, т.е. примерно такие:
 
@@ -57,8 +62,8 @@ Response:
 
 ```php
 /**
- * @var $request extas\interfaces\servers\requests\IServerRequest
- * @var $response extas\interfaces\servers\responses\IServerResponse
+ * @var Psr\Http\Message\RequestInterface $request
+ * @var Psr\Http\Message\ResponseInterface $response
  */
 $box = Expander::getExpandingBox('index', 'app');
 $box->expand($request, $response);
@@ -73,10 +78,10 @@ $box->expand($request, $response);
  ```php 
  /**
   * @param extas\interfaces\expands\IExpandingBox $box
-  * @param extas\interfaces\servers\requests\IServerRequest $request
-  * $param extas\interfaces\servers\responses\IServerResponse
+  * @param Psr\Http\Message\RequestInterface $request
+  * $param Psr\Http\Message\ResponseInterface $response
   */
- public function __invoke(IExpandingBox &$box, IServerRequest $request, IServerResponse $response);
+ public function __invoke(IExpandingBox &$box, RequestInterface $request, ResponseInterface $response);
  ```
  
  ## Пример плагина для expand'a
@@ -84,7 +89,7 @@ $box->expand($request, $response);
  ```php
 class PluginAppExpandVersion extends Plugin
 {
-    public function __invoke(IExpandingBox &$box, IServerRequest $request, IServerResponse $response)
+    public function __invoke(IExpandingBox &$box, RequestInterface $request, ResponseInterface $response)
     {
         $box->addExpand($box->getName() . '.version')
             ->addToValue(
@@ -141,13 +146,13 @@ print_r($box->getValue());
 
 ## Использование дефолтного плагина для expand'a
 
-Дефолтный плагин позволяет определить права доступа к экспанду, а также самостоятельно прописывает имя expand'a по шаблону `имя_родительской_коробки.имя_экспанда`, т.е. для примера выше имя получится такое же как в примере - `app.version`.
+Дефолтный плагин самостоятельно прописывает имя expand'a по шаблону `имя_родительской_коробки.имя_экспанда`, т.е. для примера выше имя получится такое же как в примере - `app.version`.
 
 ```php
 use extas\interfaces\access\IAccess;
 use extas\interfaces\expands\IExpandongBox;
-use extas\interfaces\servers\requests\IServerRequest;
-use extas\interfaces\servers\responses\IServerResponse;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
 class PluginAppExpandVersion extends PluginExpandAbstract
 {
@@ -157,7 +162,7 @@ class PluginAppExpandVersion extends PluginExpandAbstract
         IAccess::FIELD__OPERATION => 'view'
     ];
     
-    protected function dispatch(IExpandingBox &$box, IServerRequest $request, IServerResponse $response)
+    protected function dispatch(IExpandingBox &$box, RequestInterface $request, ResponseInterface $response)
     {
         $box->addToValue('version', getenv('APP_VERSION') ?: '1.0');
     }

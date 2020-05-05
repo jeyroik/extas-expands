@@ -16,5 +16,4 @@ class ExpandRequiredRepository extends Repository implements IExpandRequiredRepo
     protected string $name = 'expand_required';
     protected string $pk = ExpandRequired::FIELD__NAME;
     protected string $scope = 'extas';
-    protected string $idAs = '';
 }

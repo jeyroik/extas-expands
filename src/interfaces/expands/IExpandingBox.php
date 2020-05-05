@@ -1,10 +1,9 @@
 <?php
 namespace extas\interfaces\expands;
 
-use extas\interfaces\IHasDescription;
-use extas\interfaces\parameters\IParameter;
-use extas\interfaces\servers\requests\IServerRequest;
-use extas\interfaces\servers\responses\IServerResponse;
+use extas\interfaces\samples\parameters\ISampleParameter;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * Interface IExpandingBox
@@ -12,7 +11,7 @@ use extas\interfaces\servers\responses\IServerResponse;
  * @package extas\interfaces\expands
  * @author jeyroik@gmail.com
  */
-interface IExpandingBox extends IParameter, IHasDescription
+interface IExpandingBox extends ISampleParameter
 {
     const DATA__MARKER = '$';
     const FIELD__ROOT = 'root';
@@ -37,12 +36,12 @@ interface IExpandingBox extends IParameter, IHasDescription
     public function isPacked(): bool;
 
     /**
-     * @param IServerRequest $request
-     * @param IServerResponse $response
+     * @param RequestInterface $request
+     * @param ResponseInterface $response
      *
      * @return void
      */
-    public function expand(IServerRequest $request, IServerResponse $response);
+    public function expand(RequestInterface $request, ResponseInterface $response);
 
     /**
      * @param string $key

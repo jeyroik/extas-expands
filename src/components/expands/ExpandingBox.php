@@ -1,11 +1,11 @@
 <?php
 namespace extas\components\expands;
 
-use extas\components\parameters\Parameter;
+use extas\components\samples\parameters\SampleParameter;
 use extas\components\THasDescription;
 use extas\interfaces\expands\IExpandingBox;
-use extas\interfaces\servers\requests\IServerRequest;
-use extas\interfaces\servers\responses\IServerResponse;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * Class ExpandingBox
@@ -13,15 +13,15 @@ use extas\interfaces\servers\responses\IServerResponse;
  * @package extas\components\expands
  * @author jeyroik@gmail.com
  */
-class ExpandingBox extends Parameter implements IExpandingBox
+class ExpandingBox extends SampleParameter implements IExpandingBox
 {
     use THasDescription;
 
     /**
-     * @param IServerRequest $request
-     * @param IServerResponse $response
+     * @param RequestInterface $request
+     * @param ResponseInterface $response
      */
-    public function expand(IServerRequest $request, IServerResponse $response)
+    public function expand(RequestInterface $request, ResponseInterface $response)
     {
         foreach ($this->getPluginsByStage('expand.' . $this->getName()) as $plugin) {
             $plugin($this, $request, $response);
