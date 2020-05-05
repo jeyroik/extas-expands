@@ -1,14 +1,28 @@
 <?php
 namespace tests;
 
+use Dotenv\Dotenv;
 use extas\components\expands\Expander;
 use extas\components\expands\ExpandingBox;
 use extas\components\expands\ExpandRequired;
 use extas\interfaces\expands\IExpandingBox;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class ExpanderTest
+ * 
+ * @package tests
+ * @author jeyroik@gmail.com
+ */
 class ExpanderTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $env = Dotenv::create(getcwd() . '/tests/');
+        $env->load();
+    }
+
     public function testGetExpandingBox()
     {
         $box = Expander::getExpandingBox('root', 'box');
