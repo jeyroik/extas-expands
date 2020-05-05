@@ -6,6 +6,7 @@ use extas\components\errors\THasErrors;
 use extas\components\plugins\Plugin;
 use extas\components\protocols\ProtocolExpand;
 use extas\interfaces\expands\IExpandingBox;
+use extas\interfaces\stages\IStageExpandBox;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -20,7 +21,7 @@ use Psr\Http\Message\ResponseInterface;
  * @package extas\components\plugins\expands
  * @author jeyroik@gmail.com
  */
-abstract class PluginExpandAbstract extends Plugin
+abstract class PluginExpandAbstract extends Plugin implements IStageExpandBox
 {
     use THasErrors;
 
@@ -31,7 +32,7 @@ abstract class PluginExpandAbstract extends Plugin
      *
      * @return void
      */
-    public function __invoke(IExpandingBox &$parent, RequestInterface $request, ResponseInterface &$response)
+    public function __invoke(IExpandingBox &$parent, RequestInterface $request, ResponseInterface $response): void
     {
         $expand = $this->getExpandName();
         $expand && $parent->addExpand($parent->getName() . '.' . $expand);
@@ -73,7 +74,7 @@ abstract class PluginExpandAbstract extends Plugin
     abstract protected function dispatch(
         IExpandingBox &$parent,
         RequestInterface $request,
-        ResponseInterface &$response
+        ResponseInterface $response
     );
 
     /**

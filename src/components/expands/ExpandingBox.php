@@ -4,6 +4,7 @@ namespace extas\components\expands;
 use extas\components\samples\parameters\SampleParameter;
 use extas\components\THasDescription;
 use extas\interfaces\expands\IExpandingBox;
+use extas\interfaces\stages\IStageExpandBox;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -23,15 +24,15 @@ class ExpandingBox extends SampleParameter implements IExpandingBox
      */
     public function expand(RequestInterface $request, ResponseInterface $response)
     {
-        foreach ($this->getPluginsByStage('expand.' . $this->getName()) as $plugin) {
-            $plugin($this, $request, $response);
-        }
+        $this->runPluginsByStage(IStageExpandBox::STAGE__PREFIX . $this->getName(), $request, $response);
 
         $root = $this->getRoot();
 
-        foreach ($this->getPluginsByStage('expand.' . $root . '.' . $this->getName()) as $plugin) {
-            $plugin($this, $request, $response);
-        }
+        $this->runPluginsByStage(
+            IStageExpandBox::STAGE__PREFIX . $root . '.' . $this->getName(),
+            $request,
+            $response
+        );
     }
 
     /**
@@ -155,6 +156,18 @@ class ExpandingBox extends SampleParameter implements IExpandingBox
         $this->config[static::DATA__MARKER . $this->getName()] = $data;
 
         return $this;
+    }
+
+    /**
+     * @param string $stage
+     * @param RequestInterface $request
+     * @param ResponseInterface $response
+     */
+    protected function runPluginsByStage(string $stage, RequestInterface $request, ResponseInterface $response)
+    {
+        foreach ($this->getPluginsByStage($stage) as $plugin) {
+            $plugin($this, $request, $response);
+        }
     }
 
     /**
