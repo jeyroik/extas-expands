@@ -30,6 +30,6 @@ class PluginException extends PluginExpandAbstract
      */
     protected function getExpandName(): string
     {
-        return 'test';
+        return 'status';
     }
 }
