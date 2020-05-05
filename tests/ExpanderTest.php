@@ -6,6 +6,7 @@ use extas\components\expands\ExpandingBox;
 use extas\components\expands\ExpandRequired;
 use extas\components\plugins\Plugin;
 use extas\components\plugins\PluginRepository;
+use extas\components\protocols\ProtocolExpand;
 use extas\interfaces\expands\IExpandingBox;
 use extas\interfaces\repositories\IRepository;
 
@@ -52,13 +53,22 @@ class ExpanderTest extends TestCase
         $box = new ExpandingBox([
             ExpandingBox::FIELD__NAME => 'test'
         ]);
+
         $this->pluginRepo->create(new Plugin([
             Plugin::FIELD__CLASS => PluginDispatch::class,
             Plugin::FIELD__STAGE => 'expand.test'
         ]));
+        
         $box->expand($this->getRequest(), $this->getResponse());
         $this->assertEquals('Ok', $box->getValue()['status']);
         $this->assertEquals(['test.status'], $box->getExpand());
+    }
+
+    public function testErrors()
+    {
+        $box = new ExpandingBox([
+            ExpandingBox::FIELD__NAME => 'test'
+        ]);
 
         $this->pluginRepo->create(new Plugin([
             Plugin::FIELD__CLASS => PluginException::class,
@@ -147,7 +157,7 @@ class ExpanderTest extends TestCase
             new Uri('http', 'localhost', 80, '/'),
             new Headers([
                 'Content-type' => 'text/html',
-                IExpandingBox::FIELD__EXPAND => 'test.status'
+                ProtocolExpand::HEADER__PREFIX . IExpandingBox::FIELD__EXPAND => 'test.status'
             ]),
             [],
             [],

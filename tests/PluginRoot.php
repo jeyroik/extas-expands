@@ -17,7 +17,7 @@ use Psr\Http\Message\ResponseInterface;
 class PluginRoot extends Plugin implements IStageExpandBox
 {
     use THasErrors;
-    
+
     /**
      * @param IExpandingBox $box
      * @param RequestInterface $request

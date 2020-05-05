@@ -1,6 +1,7 @@
 <?php
 namespace extas\interfaces\stages;
 
+use extas\interfaces\errors\IHasErrors;
 use extas\interfaces\expands\IExpandingBox;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -11,7 +12,7 @@ use Psr\Http\Message\ResponseInterface;
  * @package extas\interfaces\stages
  * @author jeyroik@gmail.com
  */
-interface IStageExpandBox
+interface IStageExpandBox extends IHasErrors
 {
     public const STAGE__PREFIX = 'expand.';
 
