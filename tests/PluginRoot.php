@@ -20,7 +20,7 @@ class PluginRoot extends Plugin implements IStageExpandBox
      * @param RequestInterface $request
      * @param ResponseInterface $response
      */
-    public function __invoke(IExpandingBox &$box, RequestInterface $request, ResponseInterface &$response): void
+    public function __invoke(IExpandingBox &$box, RequestInterface $request, ResponseInterface $response): void
     {
         $box->addToValue('test.root.box', 'is ok');
     }
