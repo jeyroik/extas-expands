@@ -35,11 +35,17 @@ class ExpanderTest extends TestCase
         parent::setUp();
         $env = Dotenv::create(getcwd() . '/tests/');
         $env->load();
-        $this->pluginRepo = new PluginRepository();
+        $this->pluginRepo = new class extends PluginRepository {
+            public function reload()
+            {
+                parent::$stagesWithPlugins = [];
+            }
+        };
     }
 
     protected function tearDown(): void
     {
+        $this->pluginRepo->reload();
         $this->pluginRepo->delete([Plugin::FIELD__CLASS => [
             PluginBox::class,
             PluginRoot::class,
@@ -58,7 +64,7 @@ class ExpanderTest extends TestCase
             Plugin::FIELD__CLASS => PluginDispatch::class,
             Plugin::FIELD__STAGE => 'expand.test'
         ]));
-        
+
         $box->expand($this->getRequest(), $this->getResponse());
         $this->assertEquals('Ok', $box->getValue()['status']);
         $this->assertEquals(['test.status'], $box->getExpand());
