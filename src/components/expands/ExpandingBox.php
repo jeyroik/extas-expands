@@ -3,6 +3,7 @@ namespace extas\components\expands;
 
 use extas\components\samples\parameters\SampleParameter;
 use extas\components\THasDescription;
+use extas\interfaces\errors\IHasErrors;
 use extas\interfaces\expands\IExpandingBox;
 use extas\interfaces\stages\IStageExpandBox;
 use Psr\Http\Message\RequestInterface;
@@ -166,7 +167,17 @@ class ExpandingBox extends SampleParameter implements IExpandingBox
     protected function runPluginsByStage(string $stage, RequestInterface $request, ResponseInterface $response)
     {
         foreach ($this->getPluginsByStage($stage) as $plugin) {
+            /**
+             * @var IStageExpandBox|IHasErrors $plugin
+             */
             $plugin($this, $request, $response);
+
+            if ($plugin->hasErrors()) {
+                $value = $this->getValue();
+                $errors = $value['errors'] ?? [];
+                $errors = array_merge($errors, $plugin->getErrors());
+                $this->addToValue('errors', $errors);
+            }
         }
     }
 

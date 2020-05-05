@@ -65,8 +65,8 @@ class ExpanderTest extends TestCase
             Plugin::FIELD__STAGE => 'expand.test'
         ]));
 
-        $this->expectExceptionMessage('Unexpected');
         $box->expand($this->getRequest(), $this->getResponse());
+        $this->assertArrayHasKey('errors', $box->getValue());
     }
 
     public function testExpand()
