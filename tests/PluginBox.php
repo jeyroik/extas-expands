@@ -1,6 +1,7 @@
 <?php
 namespace tests;
 
+use extas\components\errors\THasErrors;
 use extas\components\plugins\Plugin;
 use extas\interfaces\expands\IExpandingBox;
 use extas\interfaces\stages\IStageExpandBox;
@@ -15,6 +16,8 @@ use Psr\Http\Message\ResponseInterface;
  */
 class PluginBox extends Plugin implements IStageExpandBox
 {
+    use THasErrors;
+
     /**
      * @param IExpandingBox $box
      * @param RequestInterface $request
