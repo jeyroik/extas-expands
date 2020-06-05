@@ -1,17 +1,16 @@
 <?php
-namespace extas\components\plugins\expands;
+namespace extas\components\plugins\init;
 
 use extas\components\expands\ExpandRequired;
-use extas\components\plugins\PluginInstallDefault;
 use extas\interfaces\expands\IExpandRequiredRepository;
 
 /**
- * Class PluginInstallExpandsRequired
+ * Class InitExpandsRequired
  *
- * @package extas\components\plugins
+ * @package extas\components\init
  * @author jeyroik@gmail.com
  */
-class PluginInstallExpandsRequired extends PluginInstallDefault
+class InitExpandsRequired extends InitSection
 {
     protected string $selfRepositoryClass = IExpandRequiredRepository::class;
     protected string $selfUID = ExpandRequired::FIELD__NAME;
