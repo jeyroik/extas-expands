@@ -1,17 +1,16 @@
 <?php
-namespace extas\components\plugins\expands;
+namespace extas\components\plugins\uninstall;
 
 use extas\components\expands\ExpandRequired;
-use extas\components\plugins\PluginInstallDefault;
 use extas\interfaces\expands\IExpandRequiredRepository;
 
 /**
- * Class PluginInstallExpandsRequired
+ * Class UninstallExpands
  *
- * @package extas\components\plugins
+ * @package extas\components\uninstall
  * @author jeyroik@gmail.com
  */
-class PluginInstallExpandsRequired extends PluginInstallDefault
+class UninstallExpands extends UninstallSection
 {
     protected string $selfRepositoryClass = IExpandRequiredRepository::class;
     protected string $selfUID = ExpandRequired::FIELD__NAME;

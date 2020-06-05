@@ -3,8 +3,6 @@
   "description": "Extas expands package",
   "require": {
     "jeyroik/extas-base": "2.*",
-    "jeyroik/extas-access": "2.*",
-    "jeyroik/extas-players": "1.*",
     "jeyroik/extas-protocols": "2.*",
     "jeyroik/extas-errors": "0.*"
   },
