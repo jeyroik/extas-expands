@@ -2,7 +2,6 @@
 namespace extas\components\plugins\init;
 
 use extas\components\expands\ExpandRequired;
-use extas\interfaces\expands\IExpandRequiredRepository;
 
 /**
  * Class InitExpandsRequired
@@ -12,7 +11,7 @@ use extas\interfaces\expands\IExpandRequiredRepository;
  */
 class InitExpandsRequired extends InitSection
 {
-    protected string $selfRepositoryClass = IExpandRequiredRepository::class;
+    protected string $selfRepositoryClass = 'expandRequiredRepository';
     protected string $selfUID = ExpandRequired::FIELD__NAME;
     protected string $selfSection = 'required_expands';
     protected string $selfName = 'required expand';
