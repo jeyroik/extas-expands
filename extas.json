@@ -26,6 +26,11 @@
       "install_on": "initialization"
     },
     {
+      "class": "extas\\components\\plugins\\uninstall\\UninstallExpandsRequired",
+      "stage": "extas.uninstall.section.required_expands",
+      "install_on": "initialization"
+    },
+    {
       "class": "extas\\components\\plugins\\servers\\PluginServerDispatchRouteBefore",
       "stage": "route.before"
     }
