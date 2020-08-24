@@ -1,5 +1,5 @@
 <?php
-namespace tests;
+namespace tests\expands\misc;
 
 use extas\components\errors\THasErrors;
 use extas\components\plugins\Plugin;
@@ -11,7 +11,7 @@ use Psr\Http\Message\ResponseInterface;
 /**
  * Class PluginRoot
  *
- * @package tests
+ * @package tests\expands\misc
  * @author jeyroik@gmail.com
  */
 class PluginRoot extends Plugin implements IStageExpandBox

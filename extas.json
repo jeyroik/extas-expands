@@ -1,10 +1,20 @@
 {
   "name": "extas/protocol-expand",
   "installer_version": 3,
-  "package_classes": [
+  "repositories": [
     {
-      "interface": "expandRequiredRepository",
-      "class": "extas\\components\\expands\\ExpandRequiredRepository"
+      "name": "expands_required",
+      "scope": "extas",
+      "pk": "name",
+      "class": "extas\\components\\expands\\ExpandRequired",
+      "aliases": ["expandsRequired", "expandRequiredRepository"]
+    }
+  ],
+  "plugins_install": [
+    {
+      "repository": "expands",
+      "name": "expand required",
+      "section": "expands_required"
     }
   ],
   "commands_options": [
@@ -19,22 +29,6 @@
       "class": "extas\\"
     }
   ],
-  "plugins": [
-    {
-      "class": "extas\\components\\plugins\\init\\InitExpandsRequired",
-      "stage": "extas.init.section.required_expands",
-      "install_on": "initialization"
-    },
-    {
-      "class": "extas\\components\\plugins\\uninstall\\UninstallExpandsRequired",
-      "stage": "extas.uninstall.section.required_expands",
-      "install_on": "initialization"
-    },
-    {
-      "class": "extas\\components\\plugins\\servers\\PluginServerDispatchRouteBefore",
-      "stage": "route.before"
-    }
-  ],
   "protocols": [
     {
       "name": "expand",
@@ -42,15 +36,6 @@
       "description": "Parse headers and request parameters for expand attribute",
       "accept": ["*"],
       "class": "extas\\components\\protocols\\ProtocolExpand"
-    }
-  ],
-  "extensions": [
-    {
-      "class": "extas\\components\\extensions\\ExtensionRepositoryGet",
-      "interface": "extas\\interfaces\\extensions\\IExtensionRepositoryGet",
-      "subject": "*",
-      "methods": ["expandRequiredRepository"],
-      "install_on": "initialization"
     }
   ]
 }

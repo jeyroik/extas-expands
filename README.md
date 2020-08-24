@@ -2,6 +2,9 @@
 ![codecov.io](https://codecov.io/gh/jeyroik/extas-expands/coverage.svg?branch=master)
 <a href="https://github.com/phpstan/phpstan"><img src="https://img.shields.io/badge/PHPStan-enabled-brightgreen.svg?style=flat" alt="PHPStan Enabled"></a> 
 <a href="https://codeclimate.com/github/jeyroik/extas-expands/maintainability"><img src="https://api.codeclimate.com/v1/badges/93d2094728c65c5f2be5/maintainability" /></a>
+[![Latest Stable Version](https://poser.pugx.org/jeyroik/extas-expands/v)](//packagist.org/packages/jeyroik/extas-q-crawlers)
+[![Total Downloads](https://poser.pugx.org/jeyroik/extas-expands/downloads)](//packagist.org/packages/jeyroik/extas-q-crawlers)
+[![Dependents](https://poser.pugx.org/jeyroik/extas-expands/dependents)](//packagist.org/packages/jeyroik/extas-q-crawlers)
 
 # Описание
 

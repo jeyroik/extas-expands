@@ -1,5 +1,5 @@
 <?php
-namespace tests;
+namespace tests\expands\misc;
 
 use extas\components\plugins\expands\PluginExpandAbstract;
 use extas\interfaces\expands\IExpandingBox;
@@ -9,7 +9,7 @@ use Psr\Http\Message\ResponseInterface;
 /**
  * Class PluginDispatch
  *
- * @package tests
+ * @package tests\expands\misc
  * @author jeyroik@gmail.com
  */
 class PluginDispatch extends PluginExpandAbstract

@@ -1,57 +1,44 @@
 <?php
-namespace tests;
+namespace tests\expands;
 
 use extas\components\expands\Expander;
 use extas\components\expands\ExpandingBox;
 use extas\components\expands\ExpandRequired;
-use extas\components\plugins\Plugin;
-use extas\components\plugins\PluginRepository;
+use extas\components\http\TSnuffHttp;
+use extas\components\plugins\TSnuffPlugins;
 use extas\components\protocols\ProtocolExpand;
+use extas\components\repositories\TSnuffRepositoryDynamic;
 use extas\interfaces\expands\IExpandingBox;
-use extas\interfaces\repositories\IRepository;
+use tests\expands\misc\PluginBox;
+use tests\expands\misc\PluginDispatch;
+use tests\expands\misc\PluginException;
+use tests\expands\misc\PluginRoot;
 
 use Dotenv\Dotenv;
 use PHPUnit\Framework\TestCase;
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
-use Slim\Http\Headers;
-use Slim\Http\Request;
-use Slim\Http\Response;
-use Slim\Http\Stream;
-use Slim\Http\Uri;
 
 /**
  * Class ExpanderTest
  *
- * @package tests
+ * @package tests\expands
  * @author jeyroik@gmail.com
  */
 class ExpanderTest extends TestCase
 {
-    protected IRepository $pluginRepo;
+    use TSnuffRepositoryDynamic;
+    use TSnuffPlugins;
+    use TSnuffHttp;
 
     protected function setUp(): void
     {
         parent::setUp();
         $env = Dotenv::create(getcwd() . '/tests/');
         $env->load();
-        $this->pluginRepo = new class extends PluginRepository {
-            public function reload()
-            {
-                parent::$stagesWithPlugins = [];
-            }
-        };
     }
 
     protected function tearDown(): void
     {
-        $this->pluginRepo->reload();
-        $this->pluginRepo->delete([Plugin::FIELD__CLASS => [
-            PluginBox::class,
-            PluginRoot::class,
-            PluginDispatch::class,
-            PluginException::class
-        ]]);
+        $this->deleteSnuffPlugins();
     }
 
     public function testExpandDispatching()
@@ -60,12 +47,18 @@ class ExpanderTest extends TestCase
             ExpandingBox::FIELD__NAME => 'test'
         ]);
 
-        $this->pluginRepo->create(new Plugin([
-            Plugin::FIELD__CLASS => PluginDispatch::class,
-            Plugin::FIELD__STAGE => 'expand.test'
-        ]));
+        $this->createSnuffPlugin(PluginDispatch::class, ['expand.test']);
 
-        $box->expand($this->getRequest(), $this->getResponse());
+        $box->expand(
+            $this->getPsrRequest(
+                '',
+                [
+                    'Content-type' => 'text/html',
+                    ProtocolExpand::HEADER__PREFIX . IExpandingBox::FIELD__EXPAND => 'test.status'
+                ]
+            ),
+            $this->getPsrResponse()
+        );
         $this->assertEquals('Ok', $box->getValue()['status']);
         $this->assertEquals(['test.status'], $box->getExpand());
     }
@@ -76,12 +69,18 @@ class ExpanderTest extends TestCase
             ExpandingBox::FIELD__NAME => 'test'
         ]);
 
-        $this->pluginRepo->create(new Plugin([
-            Plugin::FIELD__CLASS => PluginException::class,
-            Plugin::FIELD__STAGE => 'expand.test'
-        ]));
+        $this->createSnuffPlugin(PluginException::class, ['expand.test']);
 
-        $box->expand($this->getRequest(), $this->getResponse());
+        $box->expand(
+            $this->getPsrRequest(
+                '',
+                [
+                    'Content-type' => 'text/html',
+                    ProtocolExpand::HEADER__PREFIX . IExpandingBox::FIELD__EXPAND => 'test.status'
+                ]
+            ),
+            $this->getPsrResponse()
+        );
         $this->assertArrayHasKey('errors', $box->getValue());
     }
 
@@ -92,17 +91,19 @@ class ExpanderTest extends TestCase
             ExpandingBox::FIELD__ROOT => 'root'
         ]);
 
-        $this->pluginRepo->create(new Plugin([
-            Plugin::FIELD__CLASS => PluginBox::class,
-            Plugin::FIELD__STAGE => 'expand.test'
-        ]));
+        $this->createSnuffPlugin(PluginBox::class, ['expand.test']);
+        $this->createSnuffPlugin(PluginRoot::class, ['expand.root.test']);
 
-        $this->pluginRepo->create(new Plugin([
-            Plugin::FIELD__CLASS => PluginRoot::class,
-            Plugin::FIELD__STAGE => 'expand.root.test'
-        ]));
-
-        $box->expand($this->getRequest(), $this->getResponse());
+        $box->expand(
+            $this->getPsrRequest(
+                '',
+                [
+                    'Content-type' => 'text/html',
+                    ProtocolExpand::HEADER__PREFIX . IExpandingBox::FIELD__EXPAND => 'test.status'
+                ]
+            ),
+            $this->getPsrResponse()
+        );
         $this->assertNotEmpty($box->getValue());
         $this->assertEquals('is ok', $box->getValue()['test.box']);
         $this->assertEquals('is ok', $box->getValue()['test.root.box']);
@@ -151,31 +152,5 @@ class ExpanderTest extends TestCase
         $required->setRoutes(['/']);
         $this->assertEquals(['*'], $required->getAccept());
         $this->assertEquals(['/'], $required->getRoutes());
-    }
-
-    /**
-     * @return RequestInterface
-     */
-    protected function getRequest(): RequestInterface
-    {
-        return new Request(
-            'GET',
-            new Uri('http', 'localhost', 80, '/'),
-            new Headers([
-                'Content-type' => 'text/html',
-                ProtocolExpand::HEADER__PREFIX . IExpandingBox::FIELD__EXPAND => 'test.status'
-            ]),
-            [],
-            [],
-            new Stream(fopen('php://input', 'r'))
-        );
-    }
-
-    /**
-     * @return ResponseInterface
-     */
-    protected function getResponse(): ResponseInterface
-    {
-        return new Response();
     }
 }
