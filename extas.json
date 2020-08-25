@@ -1,6 +1,24 @@
 {
-  "name": "extas/protocol-expand",
+  "name": "extas/expands",
   "installer_version": 3,
+  "plugins": [
+    {
+      "class": "extas\\components\\plugins\\expands\\PluginExpand",
+      "stage": "extas.expand.@expand"
+    }
+  ],
+  "export": {
+    "plugins": [
+      {
+        "class": "extas\\components\\plugins\\expands\\PluginParseSkipEmpty",
+        "stage": "extas.expand.parse"
+      },
+      {
+        "class": "extas\\components\\plugins\\expands\\PluginParseWildcard",
+        "stage": "extas.expand.parse"
+      }
+    ]
+  },
   "repositories": [
     {
       "name": "expand_boxes",
