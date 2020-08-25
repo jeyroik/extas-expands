@@ -83,12 +83,23 @@ class ExpanderTest extends TestCase
             }
         };
 
+        $protocol = new ProtocolExpand();
+        $args = [];
+
+        $protocol($args, $this->getPsrRequest('', [
+            ProtocolExpand::HEADER__PREFIX . 'expand' => ' Test.is_oK , teSt.* ,  '
+        ]));
+
+        $this->assertEquals(
+            [Expand::ARG__EXPAND => ['test.is_ok', 'test.*', '']],
+            $args,
+            'Missed or incorrect expand: ' . print_r($args, true)
+        );
+
         $expand = new class ([
             Expand::FIELD__PSR_REQUEST => $this->getPsrRequest(),
             Expand::FIELD__PSR_RESPONSE => $this->getPsrResponse(),
-            Expand::FIELD__ARGUMENTS => [
-                'expand' => ' Test.is_oK , teSt.* ,  '
-            ]
+            Expand::FIELD__ARGUMENTS => $args
         ]) extends Expand {
             protected array $expands = [];
 
@@ -130,21 +141,5 @@ class ExpanderTest extends TestCase
                 'Missed expand "' . $item . '" in ' . print_r($current, true)
             );
         }
-    }
-
-    public function testExpandProtocol()
-    {
-        $protocol = new ProtocolExpand();
-        $args = [];
-
-        $protocol($args, $this->getPsrRequest('', [
-            ProtocolExpand::HEADER__PREFIX . 'expand' => 'test.is_ok'
-        ]));
-
-        $this->assertEquals(
-            [Expand::ARG__EXPAND => 'test.is_ok'],
-            $args,
-            'Missed or incorrect expand: ' . print_r($args, true)
-        );
     }
 }
