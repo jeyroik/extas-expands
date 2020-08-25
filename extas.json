@@ -7,7 +7,7 @@
       "scope": "extas",
       "pk": "name",
       "class": "extas\\components\\expands\\ExpandRequired",
-      "aliases": ["expandsRequired", "expandRequiredRepository"]
+      "aliases": ["expandsRequired", "expandRequiredRepository", "expands"]
     }
   ],
   "plugins_install": [
