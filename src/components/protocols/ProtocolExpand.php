@@ -1,6 +1,7 @@
 <?php
 namespace extas\components\protocols;
 
+use extas\components\expands\Expand;
 use extas\interfaces\expands\IExpandingBox;
 
 /**
@@ -15,5 +16,5 @@ use extas\interfaces\expands\IExpandingBox;
  */
 class ProtocolExpand extends ProtocolParameterHeaderDefault
 {
-    protected string $protocolKey = IExpandingBox::FIELD__EXPAND;
+    protected string $protocolKey = Expand::ARG__EXPAND;
 }
