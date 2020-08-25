@@ -60,13 +60,8 @@ class Expand extends Item implements IExpand
     protected function parseExpand(): array
     {
         $args = $this->getArguments();
-        $expand = $args[static::ARG__EXPAND] ?? '';
-        $expands = explode(',', $expand);
+        $expands = $args[static::ARG__EXPAND] ?? [];
         $expands[] = static::EXPAND__DEFAULT;
-
-        foreach ($expands as $index => $expand) {
-            $expands[$index] = trim(strtolower($expand));
-        }
 
         foreach ($this->getPluginsByStage(IStageExpandParse::NAME) as $plugin) {
             /**

@@ -3,6 +3,7 @@ namespace extas\components\protocols;
 
 use extas\components\expands\Expand;
 use extas\interfaces\expands\IExpandingBox;
+use Psr\Http\Message\RequestInterface;
 
 /**
  * Class ProtocolExpand
@@ -17,4 +18,32 @@ use extas\interfaces\expands\IExpandingBox;
 class ProtocolExpand extends ProtocolParameterHeaderDefault
 {
     protected string $protocolKey = Expand::ARG__EXPAND;
+
+    /**
+     * @param array $args
+     * @param RequestInterface|null $request
+     */
+    public function __invoke(array &$args = [], RequestInterface $request = null): void
+    {
+        parent::__invoke($args, $request);
+
+        if (isset($args[Expand::ARG__EXPAND])) {
+            $args[Expand::ARG__EXPAND] = $this->normalizeExpand($args[Expand::ARG__EXPAND]);
+        }
+    }
+
+    /**
+     * @param string $expandString
+     * @return array
+     */
+    protected function normalizeExpand(string $expandString): array
+    {
+        $expands = explode(',', $expandString);
+
+        foreach ($expands as $index => $expand) {
+            $expands[$index] = trim(strtolower($expand));
+        }
+
+        return $expands;
+    }
 }
