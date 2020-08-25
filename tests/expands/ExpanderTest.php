@@ -1,19 +1,19 @@
 <?php
 namespace tests\expands;
 
-use extas\components\expands\Expander;
-use extas\components\expands\ExpandingBox;
-use extas\components\expands\ExpandRequired;
+use extas\components\expands\Box;
+use extas\components\expands\Expand;
 use extas\components\http\TSnuffHttp;
+use extas\components\Item;
+use extas\components\plugins\expands\PluginExpand;
+use extas\components\plugins\expands\PluginParseSkipEmpty;
+use extas\components\plugins\expands\PluginParseWildcard;
+use extas\components\plugins\Plugin;
 use extas\components\plugins\TSnuffPlugins;
 use extas\components\protocols\ProtocolExpand;
 use extas\components\repositories\TSnuffRepositoryDynamic;
-use extas\interfaces\expands\IExpandingBox;
-use tests\expands\misc\PluginBox;
-use tests\expands\misc\PluginDispatch;
-use tests\expands\misc\PluginException;
-use tests\expands\misc\PluginRoot;
-
+use extas\components\THasMagicClass;
+use tests\expands\misc\ExpandTestIsOk;
 use Dotenv\Dotenv;
 use PHPUnit\Framework\TestCase;
 
@@ -28,129 +28,123 @@ class ExpanderTest extends TestCase
     use TSnuffRepositoryDynamic;
     use TSnuffPlugins;
     use TSnuffHttp;
+    use THasMagicClass;
 
     protected function setUp(): void
     {
         parent::setUp();
         $env = Dotenv::create(getcwd() . '/tests/');
         $env->load();
+        $this->createSnuffDynamicRepositories([
+            ['expandBoxes', 'name', Box::class]
+        ]);
+        $this->getMagicClass('expandBoxes')->create(new Box([
+            'name' => 'test.is_ok',
+            'aliases' => ['test.is_ok', 'test']
+        ]));
+        $this->getMagicClass('expandBoxes')->create(new Box([
+            'name' => 'test.failed',
+            'aliases' => ['test.failed', 'test']
+        ]));
+        $this->getMagicClass('expandBoxes')->create(new Box([
+            'name' => 'test.work',
+            'aliases' => ['test.work', 'test']
+        ]));
+        $this->createWithSnuffRepo('pluginRepository', new Plugin([
+            Plugin::FIELD__CLASS => PluginExpand::class,
+            Plugin::FIELD__STAGE => 'extas.expand.@expand'
+        ]));
+        $this->createWithSnuffRepo('pluginRepository', new Plugin([
+            Plugin::FIELD__CLASS => PluginParseWildcard::class,
+            Plugin::FIELD__STAGE => 'extas.expand.parse'
+        ]));
+        $this->createWithSnuffRepo('pluginRepository', new Plugin([
+            Plugin::FIELD__CLASS => PluginParseSkipEmpty::class,
+            Plugin::FIELD__STAGE => 'extas.expand.parse'
+        ]));
+        $this->createWithSnuffRepo('pluginRepository', new Plugin([
+            Plugin::FIELD__CLASS => ExpandTestIsOk::class,
+            Plugin::FIELD__STAGE => 'extas.expand.test.is_ok'
+        ]));
     }
 
     protected function tearDown(): void
     {
         $this->deleteSnuffPlugins();
-    }
-
-    public function testExpandDispatching()
-    {
-        $box = new ExpandingBox([
-            ExpandingBox::FIELD__NAME => 'test'
-        ]);
-
-        $this->createSnuffPlugin(PluginDispatch::class, ['expand.test']);
-
-        $box->expand(
-            $this->getPsrRequest(
-                '',
-                [
-                    'Content-type' => 'text/html',
-                    ProtocolExpand::HEADER__PREFIX . IExpandingBox::FIELD__EXPAND => 'test.status'
-                ]
-            ),
-            $this->getPsrResponse()
-        );
-        $this->assertEquals('Ok', $box->getValue()['status']);
-        $this->assertEquals(['test.status'], $box->getExpand());
-    }
-
-    public function testErrors()
-    {
-        $box = new ExpandingBox([
-            ExpandingBox::FIELD__NAME => 'test'
-        ]);
-
-        $this->createSnuffPlugin(PluginException::class, ['expand.test']);
-
-        $box->expand(
-            $this->getPsrRequest(
-                '',
-                [
-                    'Content-type' => 'text/html',
-                    ProtocolExpand::HEADER__PREFIX . IExpandingBox::FIELD__EXPAND => 'test.status'
-                ]
-            ),
-            $this->getPsrResponse()
-        );
-        $this->assertArrayHasKey('errors', $box->getValue());
+        $this->deleteSnuffDynamicRepositories();
     }
 
     public function testExpand()
     {
-        $box = new ExpandingBox([
-            ExpandingBox::FIELD__NAME => 'test',
-            ExpandingBox::FIELD__ROOT => 'root'
-        ]);
+        $item = new class() extends Item {
+            protected function getSubjectForExtension(): string
+            {
+                return 'test';
+            }
+        };
 
-        $this->createSnuffPlugin(PluginBox::class, ['expand.test']);
-        $this->createSnuffPlugin(PluginRoot::class, ['expand.root.test']);
+        $expand = new class ([
+            Expand::FIELD__PSR_REQUEST => $this->getPsrRequest(),
+            Expand::FIELD__PSR_RESPONSE => $this->getPsrResponse(),
+            Expand::FIELD__ARGUMENTS => [
+                'expand' => ' Test.is_oK , teSt.* ,  '
+            ]
+        ]) extends Expand {
+            protected array $expands = [];
 
-        $box->expand(
-            $this->getPsrRequest(
-                '',
-                [
-                    'Content-type' => 'text/html',
-                    ProtocolExpand::HEADER__PREFIX . IExpandingBox::FIELD__EXPAND => 'test.status'
-                ]
-            ),
-            $this->getPsrResponse()
+            public function getParsedExpands()
+            {
+                return $this->expands;
+            }
+
+            protected function parseExpand(): array
+            {
+                $this->expands = parent::parseExpand();
+
+                return $this->expands;
+            }
+        };
+
+        $item = $expand->expand($item);
+
+        $this->assertEquals(
+            [
+                'expand' => ['test.is_ok', 'test.failed', 'test.work'],
+                'test' => 'is ok'
+            ],
+            $item->__toArray()
         );
-        $this->assertNotEmpty($box->getValue());
-        $this->assertEquals('is ok', $box->getValue()['test.box']);
-        $this->assertEquals('is ok', $box->getValue()['test.root.box']);
+
+        $need = ['test.is_ok', 'test.failed', 'test.work', '@expand'];
+        $current = $expand->getParsedExpands();
+
+        $this->assertCount(
+            4,
+            $current,
+            'Incorrect expands count: ' . print_r($current, true)
+        );
+
+        foreach ($need as $item) {
+            $this->assertTrue(
+                in_array($item, $current),
+                'Missed expand "' . $item . '" in ' . print_r($current, true)
+            );
+        }
     }
 
-    public function testGetExpandingBox()
+    public function testExpandProtocol()
     {
-        $box = Expander::getExpandingBox('root', 'box');
-        $this->assertTrue($box instanceof IExpandingBox);
-        $this->assertEquals('root', $box->getRoot());
-        $this->assertEquals('box', $box->getName());
+        $protocol = new ProtocolExpand();
+        $args = [];
 
-    }
+        $protocol($args, $this->getPsrRequest('', [
+            ProtocolExpand::HEADER__PREFIX . 'expand' => 'test.is_ok'
+        ]));
 
-    public function testExpandingBox()
-    {
-        $box = new ExpandingBox();
-
-        $box->setRoot('root');
-        $this->assertEquals('root', $box->getRoot());
-        $this->assertFalse($box->isPacked());
-
-        $box->setData(['data']);
-        $this->assertEquals(['data'], $box->getData());
-
-        $box->pack();
-        $this->assertTrue($box->isPacked());
-
-        $box->unpack();
-        $this->assertFalse($box->isPacked());
-
-        $box->setExpand([]);
-        $this->assertEmpty($box->getExpand());
-
-        $box->addExpand('added');
-        $this->assertEquals(['added'], $box->getExpand());
-
-        $box->addToValue('test', 'is ok');
-        $this->assertEquals(['test' => 'is ok'], $box->getValue());
-    }
-
-    public function testExpandRequired()
-    {
-        $required = new ExpandRequired();
-        $required->setAccept(['*']);
-        $required->setRoutes(['/']);
-        $this->assertEquals(['*'], $required->getAccept());
-        $this->assertEquals(['/'], $required->getRoutes());
+        $this->assertEquals(
+            [Expand::ARG__EXPAND => 'test.is_ok'],
+            $args,
+            'Missed or incorrect expand: ' . print_r($args, true)
+        );
     }
 }

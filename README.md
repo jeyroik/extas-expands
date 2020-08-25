@@ -41,6 +41,8 @@ Response:
 }
 ```
 
+`GET /index?expand_root=app&expand=version,player,player.aliases`
+
 `GET /index?expand=app.version,app.player,player.aliases`
 `Accept: application/json`
 Response:
